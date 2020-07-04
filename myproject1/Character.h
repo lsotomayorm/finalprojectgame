@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include "Animation.h"
+#include "Collider.h"
 
 using namespace sf;
 
@@ -11,6 +12,9 @@ class Character
 		~Character();
 		void update(float deltatime);
 		void draw(RenderWindow &window);
+
+		Vector2f getPosition();
+		Collider getCollider();
 
 	private:
 		RectangleShape body;

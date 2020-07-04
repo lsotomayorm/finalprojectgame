@@ -1,18 +1,29 @@
 #include <SFML\Graphics.hpp>
 #include "Animation.h"
 #include "Character.h"
+#include "Platform.h"
 #include <iostream>
 
 using namespace sf;
 using namespace std;
 
+static const float VIEW_HEIGHT = 512.f;
+
+void resizeView(const RenderWindow& window, View& view) {
+	float aspectratio = float(window.getSize().x) / float(window.getSize().y);
+	view.setSize(VIEW_HEIGHT * aspectratio, VIEW_HEIGHT);
+}
+
 int main(){
 	RenderWindow window(VideoMode(512,512), "test", Style::Close | Style::Resize);
-
+	View view(Vector2f(0.f,0.f),Vector2f(VIEW_HEIGHT, VIEW_HEIGHT));
 	Texture playertexture;
 	playertexture.loadFromFile("Content/tux/tux_2_lienzo_escalado_5.png");
 
 	Character character1(&playertexture, Vector2u(3, 9), 0.3f,150.f);
+
+	Platform platform1(nullptr, Vector2f(400.f, 200.f), Vector2f(500.f, 200.f));
+	Platform platform2(nullptr, Vector2f(400.f, 200.f), Vector2f(0.f, 0.f));
 
 	float deltatime = 0.f;
 	Clock clock;
@@ -26,7 +37,7 @@ int main(){
 					window.close();
 					break;
 				case Event::Resized:
-					cout << event.size.width << "," << event.size.height<<endl;
+					resizeView(window, view);
 					break;
 				case Event::TextEntered:
 					if (true) {
@@ -44,10 +55,18 @@ int main(){
 		}
 
 		character1.update(deltatime);
+		view.setCenter(character1.getPosition());
+		platform1.getCollider().checkCollision(character1.getCollider(), 0.f);
+		platform2.getCollider().checkCollision(character1.getCollider(), 0.f);
 
 		window.clear(Color(220,220,220,255));
+
+		window.setView(view);
+
 		character1.draw(window);
-		window.display();
+		platform1.draw(window);
+		platform2.draw(window);
+		window.display(); 
 	}
 	return 0;
 }

@@ -6,6 +6,7 @@ Character::Character(Texture* texture, Vector2u imagecount, float switchtime, fl
 	orientation = true;
 
 	body.setSize(Vector2f(100.f, 150.f));
+	body.setOrigin(body.getSize() / 2.f);
 	body.setPosition(256.f, 256.f);
 	body.setTexture(texture);
 }
@@ -20,6 +21,10 @@ void Character::update(float deltatime) {
 		movement.x -= speed * deltatime;
 	if (Keyboard::isKeyPressed(Keyboard::D))
 		movement.x += speed * deltatime;
+	if (Keyboard::isKeyPressed(Keyboard::W))
+		movement.y -= speed * deltatime;
+	if (Keyboard::isKeyPressed(Keyboard::S))
+		movement.y += speed * deltatime;
 	if (movement.x == 0.f) {
 		row = 0;
 	}
@@ -37,4 +42,12 @@ void Character::update(float deltatime) {
 
 void Character::draw(RenderWindow &window) {
 	window.draw(body);
+}
+
+Vector2f Character::getPosition() {
+	return body.getPosition();
+}
+
+Collider Character::getCollider() {
+	return Collider(body);
 }
